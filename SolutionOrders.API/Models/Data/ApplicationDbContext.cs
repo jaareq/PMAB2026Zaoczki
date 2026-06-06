@@ -16,6 +16,15 @@ namespace SolutionOrders.API.Models.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Author> Authors { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<BookCategory> BookCategories { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<BookOrder> BookOrders { get; set; }
+        public DbSet<BookOrderItem> BookOrderItems { get; set; }
+        public DbSet<BookBookCategory> BookBookCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +35,85 @@ namespace SolutionOrders.API.Models.Data
                 entity.Property(e => e.IsActive).IsRequired();
             });
 
+            modelBuilder.Entity<Author>(entity =>
+            {
+                entity.HasKey(e => e.IdAuthor);
+            });
+
+            modelBuilder.Entity<Book>(entity =>
+            {
+                entity.HasKey(e => e.IdBook);
+
+                entity.Property(e => e.Price)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.HasOne(e => e.Author)
+                    .WithMany(a => a.Books)
+                    .HasForeignKey(e => e.IdAuthor);
+
+                entity.HasOne(e => e.Publisher)
+                .WithMany(p => p.Books)
+                .HasForeignKey(e => e.IdPublisher);
+            });
+
+            modelBuilder.Entity<BookCategory>(entity =>
+            {
+                entity.HasKey(e => e.IdBookCategory);
+            });
+
+            modelBuilder.Entity<Publisher>(entity =>
+            {
+                entity.HasKey(e => e.IdPublisher);
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.HasKey(e => e.IdReview);
+
+                entity.HasOne(e => e.Book)
+                    .WithMany(b => b.Reviews)
+                    .HasForeignKey(e => e.IdBook);
+            });
+
+            modelBuilder.Entity<AppUser>(entity =>
+            {
+                entity.HasKey(e => e.IdAppUser);
+            });
+
+            modelBuilder.Entity<BookOrder>(entity =>
+            {
+                entity.HasKey(e => e.IdBookOrder);
+
+                entity.HasOne(e => e.AppUser)
+                    .WithMany(u => u.BookOrders)
+                    .HasForeignKey(e => e.IdAppUser);
+            });
+
+            modelBuilder.Entity<BookOrderItem>(entity =>
+            {
+                entity.HasKey(e => e.IdBookOrderItem);
+
+                entity.HasOne(e => e.BookOrder)
+                    .WithMany(o => o.BookOrderItems)
+                    .HasForeignKey(e => e.IdBookOrder);
+
+                entity.HasOne(e => e.Book)
+                    .WithMany(b => b.BookOrderItems)
+                    .HasForeignKey(e => e.IdBook);
+            });
+
+            modelBuilder.Entity<BookBookCategory>(entity =>
+            {
+                entity.HasKey(e => new { e.IdBook, e.IdBookCategory });
+
+                entity.HasOne(e => e.Book)
+                    .WithMany(b => b.BookBookCategories)
+                    .HasForeignKey(e => e.IdBook);
+
+                entity.HasOne(e => e.BookCategory)
+                    .WithMany(c => c.BookBookCategories)
+                    .HasForeignKey(e => e.IdBookCategory);
+            });
             // Category
             modelBuilder.Entity<Category>(entity =>
             {
@@ -110,6 +198,131 @@ namespace SolutionOrders.API.Models.Data
 
         private void SeedData(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Author>().HasData(
+                new Author
+                {
+                    IdAuthor = 1,
+                    FirstName = "Andrzej",
+                    LastName = "Sapkowski",
+                    IsActive = true
+                },
+                new Author
+                {
+                    IdAuthor = 2,
+                    FirstName = "J.K.",
+                    LastName = "Rowling",
+                    IsActive = true
+                }
+            );
+
+            modelBuilder.Entity<Book>().HasData(
+                new Book
+                {
+                    IdBook = 1,
+                    Title = "Wiedźmin: Ostatnie życzenie",
+                    Description = "Przygody Geralta z Rivii",
+                    Price = 39.99m,
+                    Pages = 332,
+                    Language = "Polski",
+                    IdAuthor = 1,
+                    IdPublisher = 1,
+                    IsActive = true
+                },
+                new Book
+                {
+                    IdBook = 2,
+                    Title = "Harry Potter i Kamień Filozoficzny",
+                    Description = "Pierwsza część serii Harry Potter",
+                    Price = 49.99m,
+                    Pages = 320,
+                    Language = "Polski",
+                    IdAuthor = 2,
+                    IdPublisher = 1,
+                    IsActive = true
+                }
+            );
+
+            modelBuilder.Entity<Publisher>().HasData(
+                new Publisher
+                {
+                    IdPublisher = 1,
+                    Name = "SuperNOWA",
+                    IsActive = true
+                }
+            );
+
+            modelBuilder.Entity<Review>().HasData(
+                new Review
+                {
+                    IdReview = 1,
+                    Content = "Bardzo dobra książka, świetny klimat.",
+                    Rating = 5,
+                    IdBook = 1,
+                    IsActive = true
+                },
+                new Review
+                {
+                    IdReview = 2,
+                    Content = "Ciekawa historia i dobrze napisane postacie.",
+                    Rating = 4,
+                    IdBook = 2,
+                    IsActive = true
+                }
+            );
+
+            modelBuilder.Entity<BookCategory>().HasData(
+                new BookCategory
+                {
+                    IdBookCategory = 1,
+                    Name = "Fantasy",
+                    IsActive = true
+                },
+                new BookCategory
+                {
+                    IdBookCategory = 2,
+                    Name = "Przygodowe",
+                    IsActive = true
+                }
+            );
+
+            modelBuilder.Entity<BookBookCategory>().HasData(
+                new BookBookCategory
+                {
+                    IdBook = 1,
+                    IdBookCategory = 1
+                },
+                new BookBookCategory
+                {
+                    IdBook = 2,
+                    IdBookCategory = 1
+                },
+                new BookBookCategory
+                {
+                    IdBook = 2,
+                    IdBookCategory = 2
+                }
+            );
+
+            modelBuilder.Entity<AppUser>().HasData(
+                new AppUser
+                {
+                    IdAppUser = 1,
+                    Name = "Administrator",
+                    Email = "admin@test.pl",
+                    Password = "admin",
+                    Role = "Admin",
+                    IsActive = true
+                },
+                new AppUser
+                {
+                    IdAppUser = 2,
+                    Name = "Użytkownik",
+                    Email = "user@test.pl",
+                    Password = "user",
+                    Role = "User",
+                    IsActive = true
+                }
+            );
             // UnitOfMeasurement
             modelBuilder.Entity<UnitOfMeasurement>().HasData(
                 new UnitOfMeasurement { IdUnitOfMeasurement = 1, Name = "szt", Description = "Sztuki", IsActive = true },

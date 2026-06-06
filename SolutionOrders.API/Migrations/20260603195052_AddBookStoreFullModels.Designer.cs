@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolutionOrders.API.Models.Data;
 
@@ -11,9 +12,11 @@ using SolutionOrders.API.Models.Data;
 namespace SolutionOrders.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603195052_AddBookStoreFullModels")]
+    partial class AddBookStoreFullModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,37 +44,9 @@ namespace SolutionOrders.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("IdAppUser");
 
                     b.ToTable("AppUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            IdAppUser = 1,
-                            Email = "admin@test.pl",
-                            IsActive = true,
-                            Name = "Administrator",
-                            Password = "admin",
-                            Role = "Admin"
-                        },
-                        new
-                        {
-                            IdAppUser = 2,
-                            Email = "user@test.pl",
-                            IsActive = true,
-                            Name = "Użytkownik",
-                            Password = "user",
-                            Role = "User"
-                        });
                 });
 
             modelBuilder.Entity("SolutionOrders.API.Models.Author", b =>
@@ -184,38 +159,6 @@ namespace SolutionOrders.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.BookBookCategory", b =>
-                {
-                    b.Property<int>("IdBook")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdBookCategory")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdBook", "IdBookCategory");
-
-                    b.HasIndex("IdBookCategory");
-
-                    b.ToTable("BookBookCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            IdBook = 1,
-                            IdBookCategory = 1
-                        },
-                        new
-                        {
-                            IdBook = 2,
-                            IdBookCategory = 1
-                        },
-                        new
-                        {
-                            IdBook = 2,
-                            IdBookCategory = 2
-                        });
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.BookCategory", b =>
                 {
                     b.Property<int>("IdBookCategory")
@@ -234,20 +177,6 @@ namespace SolutionOrders.API.Migrations
                     b.HasKey("IdBookCategory");
 
                     b.ToTable("BookCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            IdBookCategory = 1,
-                            IsActive = true,
-                            Name = "Fantasy"
-                        },
-                        new
-                        {
-                            IdBookCategory = 2,
-                            IsActive = true,
-                            Name = "Przygodowe"
-                        });
                 });
 
             modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>
@@ -695,25 +624,6 @@ namespace SolutionOrders.API.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.BookBookCategory", b =>
-                {
-                    b.HasOne("SolutionOrders.API.Models.Book", "Book")
-                        .WithMany("BookBookCategories")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SolutionOrders.API.Models.BookCategory", "BookCategory")
-                        .WithMany("BookBookCategories")
-                        .HasForeignKey("IdBookCategory")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("BookCategory");
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>
                 {
                     b.HasOne("SolutionOrders.API.Models.AppUser", "AppUser")
@@ -821,16 +731,9 @@ namespace SolutionOrders.API.Migrations
 
             modelBuilder.Entity("SolutionOrders.API.Models.Book", b =>
                 {
-                    b.Navigation("BookBookCategories");
-
                     b.Navigation("BookOrderItems");
 
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookCategory", b =>
-                {
-                    b.Navigation("BookBookCategories");
                 });
 
             modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>

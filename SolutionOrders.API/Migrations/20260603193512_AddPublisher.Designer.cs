@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolutionOrders.API.Models.Data;
 
@@ -11,9 +12,11 @@ using SolutionOrders.API.Models.Data;
 namespace SolutionOrders.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603193512_AddPublisher")]
+    partial class AddPublisher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,58 +24,6 @@ namespace SolutionOrders.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("SolutionOrders.API.Models.AppUser", b =>
-                {
-                    b.Property<int>("IdAppUser")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAppUser"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdAppUser");
-
-                    b.ToTable("AppUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            IdAppUser = 1,
-                            Email = "admin@test.pl",
-                            IsActive = true,
-                            Name = "Administrator",
-                            Password = "admin",
-                            Role = "Admin"
-                        },
-                        new
-                        {
-                            IdAppUser = 2,
-                            Email = "user@test.pl",
-                            IsActive = true,
-                            Name = "Użytkownik",
-                            Password = "user",
-                            Role = "User"
-                        });
-                });
 
             modelBuilder.Entity("SolutionOrders.API.Models.Author", b =>
                 {
@@ -184,38 +135,6 @@ namespace SolutionOrders.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.BookBookCategory", b =>
-                {
-                    b.Property<int>("IdBook")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdBookCategory")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdBook", "IdBookCategory");
-
-                    b.HasIndex("IdBookCategory");
-
-                    b.ToTable("BookBookCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            IdBook = 1,
-                            IdBookCategory = 1
-                        },
-                        new
-                        {
-                            IdBook = 2,
-                            IdBookCategory = 1
-                        },
-                        new
-                        {
-                            IdBook = 2,
-                            IdBookCategory = 2
-                        });
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.BookCategory", b =>
                 {
                     b.Property<int>("IdBookCategory")
@@ -234,73 +153,6 @@ namespace SolutionOrders.API.Migrations
                     b.HasKey("IdBookCategory");
 
                     b.ToTable("BookCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            IdBookCategory = 1,
-                            IsActive = true,
-                            Name = "Fantasy"
-                        },
-                        new
-                        {
-                            IdBookCategory = 2,
-                            IsActive = true,
-                            Name = "Przygodowe"
-                        });
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>
-                {
-                    b.Property<int>("IdBookOrder")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBookOrder"));
-
-                    b.Property<int>("IdAppUser")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("IdBookOrder");
-
-                    b.HasIndex("IdAppUser");
-
-                    b.ToTable("BookOrders");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookOrderItem", b =>
-                {
-                    b.Property<int>("IdBookOrderItem")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBookOrderItem"));
-
-                    b.Property<int>("IdBook")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdBookOrder")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdBookOrderItem");
-
-                    b.HasIndex("IdBook");
-
-                    b.HasIndex("IdBookOrder");
-
-                    b.ToTable("BookOrderItems");
                 });
 
             modelBuilder.Entity("SolutionOrders.API.Models.Category", b =>
@@ -543,52 +395,6 @@ namespace SolutionOrders.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.Review", b =>
-                {
-                    b.Property<int>("IdReview")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdReview"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdBook")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdReview");
-
-                    b.HasIndex("IdBook");
-
-                    b.ToTable("Reviews");
-
-                    b.HasData(
-                        new
-                        {
-                            IdReview = 1,
-                            Content = "Bardzo dobra książka, świetny klimat.",
-                            IdBook = 1,
-                            IsActive = true,
-                            Rating = 5
-                        },
-                        new
-                        {
-                            IdReview = 2,
-                            Content = "Ciekawa historia i dobrze napisane postacie.",
-                            IdBook = 2,
-                            IsActive = true,
-                            Rating = 4
-                        });
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.UnitOfMeasurement", b =>
                 {
                     b.Property<int>("IdUnitOfMeasurement")
@@ -695,55 +501,6 @@ namespace SolutionOrders.API.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.BookBookCategory", b =>
-                {
-                    b.HasOne("SolutionOrders.API.Models.Book", "Book")
-                        .WithMany("BookBookCategories")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SolutionOrders.API.Models.BookCategory", "BookCategory")
-                        .WithMany("BookBookCategories")
-                        .HasForeignKey("IdBookCategory")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("BookCategory");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>
-                {
-                    b.HasOne("SolutionOrders.API.Models.AppUser", "AppUser")
-                        .WithMany("BookOrders")
-                        .HasForeignKey("IdAppUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookOrderItem", b =>
-                {
-                    b.HasOne("SolutionOrders.API.Models.Book", "Book")
-                        .WithMany("BookOrderItems")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SolutionOrders.API.Models.BookOrder", "BookOrder")
-                        .WithMany("BookOrderItems")
-                        .HasForeignKey("IdBookOrder")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("BookOrder");
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.Item", b =>
                 {
                     b.HasOne("SolutionOrders.API.Models.Category", "Category")
@@ -798,44 +555,9 @@ namespace SolutionOrders.API.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("SolutionOrders.API.Models.Review", b =>
-                {
-                    b.HasOne("SolutionOrders.API.Models.Book", "Book")
-                        .WithMany("Reviews")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.AppUser", b =>
-                {
-                    b.Navigation("BookOrders");
-                });
-
             modelBuilder.Entity("SolutionOrders.API.Models.Author", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.Book", b =>
-                {
-                    b.Navigation("BookBookCategories");
-
-                    b.Navigation("BookOrderItems");
-
-                    b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookCategory", b =>
-                {
-                    b.Navigation("BookBookCategories");
-                });
-
-            modelBuilder.Entity("SolutionOrders.API.Models.BookOrder", b =>
-                {
-                    b.Navigation("BookOrderItems");
                 });
 
             modelBuilder.Entity("SolutionOrders.API.Models.Category", b =>
